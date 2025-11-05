@@ -1,1 +1,2 @@
 نمونه_آیدا,25,Healthy
+aida,2,rrr

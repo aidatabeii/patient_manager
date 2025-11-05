@@ -41,25 +41,73 @@ def save_data(patients: List[Dict]) -> None:
              f.write(f"{p['name']},{p['age']},{p['disease']}\n")
 
 
+def add_patient(patients: List[Dict]) -> None:
+    name = input("نام بیمار: ").strip()
+    if not name:
+        print("نام خالی است — اضافه نشد.")
+        return
+    try:
+        age = int(input("سن: ").strip())
+    except ValueError:
+        print("ورودی سن نامعتبر است — اضافه نشد.")
+        return
+    disease = input("بیماری: ").strip()
+    patients.append({"name": name, "age": age, "disease": disease})
+    save_data(patients)
+    print("✅ بیمار با موفقیت افزوده شد.")
 
-if  __name__ == "__main__":       
-   print ("=== تست توابع load_data / save_data ===")
-patients = load_data()
-print("داده‌های فعلی (بارگذاری شده از فایل):")
-if not patients:
-        print("  (فهرست خالی است)")
-else:
-        for i, p in enumerate(patients, 1):
-            print(f"  {i}. {p['name']} - {p['age']} - {p['disease']}")
+def show_patients(patients: List[Dict]) -> None:
+    if not patients:
+        print("\n(فهرست بیماران خالی است.)")
+        return
+    print("\n--- لیست بیماران ---")
+    for i, p in enumerate(patients, 1):
+        print(f"{i}. {p['name']} - {p['age']} سال - {p['disease']}")
+    print("----------------------")
 
+def delete_patient(patients: List[Dict]) -> None:
+    if not patients:
+        print("لیست خالی است؛ چیزی برای حذف نیست.")
+        return
+    name = input("نام بیمار برای حذف: ").strip()
+ 
+    for p in patients:
+        if p['name'] == name:
+            patients.remove(p)
+            save_data(patients)
+            print(f"🗑️ بیمار '{name}' حذف شد.")
+            return
+    print("❌ بیماری با این نام پیدا نشد.")
 
-if not patients:
-        sample = {"name": "نمونه_آیدا", "age": 25, "disease": "Healthy"}
-        patients.append(sample)
-        save_data(patients)
-        print("\nفایل خالی بود؛ یک رکورد نمونه ذخیره شد. حالا مجدداً بارگذاری می‌کنیم:")
-        patients2 = load_data()
-        for i, p in enumerate(patients2, 1):
-            print(f"  {i}. {p['name']} - {p['age']} - {p['disease']}")
-else:
-        print("\nبرای تستِ نوشتن، فایل رو پاک کن یا محتواش رو خالی کن و برنامه رو دوباره اجرا کن.")
+# ----- رابط کاربری -----
+def show_menu() -> None:
+    print("\n=== سامانه مدیریت بیماران ===")
+    print("1. افزودن بیمار جدید")
+    print("2. نمایش لیست بیماران")
+    print("3. حذف بیمار")
+    print("4. خروج")
+
+def main() -> None:
+    patients = load_data()
+
+    while True:
+        show_menu()
+        choice = input("عدد گزینه مورد نظر را وارد کنید: ").strip()
+
+        if choice == "1":
+            add_patient(patients)
+        elif choice == "2":
+            show_patients(patients)
+        elif choice == "3":
+            delete_patient(patients)
+        elif choice == "4":
+            save_data(patients)
+            print("✅ اطلاعات ذخیره شد. خداحافظ!")
+            break
+        else:
+            print("❌ گزینه نامعتبر! لطفاً دوباره تلاش کنید.")
+
+if __name__ == "__main__":
+    main()            
+
+  
