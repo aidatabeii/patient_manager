@@ -41,43 +41,67 @@ def save_data(patients: List[Dict]) -> None:
              f.write(f"{p['name']},{p['age']},{p['disease']}\n")
 
 
-def add_patient(patients: List[Dict]) -> None:
+def add_patient(patients):
+    print("\n--- افزودن بیمار جدید ---")
+
     name = input("نام بیمار: ").strip()
     if not name:
-        print("نام خالی است — اضافه نشد.")
+        print("❌ نام نمی‌تواند خالی باشد.")
         return
+
     try:
-        age = int(input("سن: ").strip())
+        age = int(input("سن بیمار: ").strip())
     except ValueError:
-        print("ورودی سن نامعتبر است — اضافه نشد.")
+        print("❌ لطفاً عدد معتبر برای سن وارد کنید.")
         return
-    disease = input("بیماری: ").strip()
-    patients.append({"name": name, "age": age, "disease": disease})
+
+    disease = input("نوع بیماری: ").strip()
+    if not disease:
+        print("❌ بیماری نمی‌تواند خالی باشد.")
+        return
+
+    # اضافه کردن بیمار جدید به لیست
+    patient = {"name": name, "age": age, "disease": disease}
+    patients.append(patient)
+
+    # ذخیره در فایل
     save_data(patients)
-    print("✅ بیمار با موفقیت افزوده شد.")
 
-def show_patients(patients: List[Dict]) -> None:
-    if not patients:
-        print("\n(فهرست بیماران خالی است.)")
-        return
+    print(f"✅ بیمار {name} با موفقیت اضافه شد.")
+
+
+def show_patients(patients):
     print("\n--- لیست بیماران ---")
-    for i, p in enumerate(patients, 1):
-        print(f"{i}. {p['name']} - {p['age']} سال - {p['disease']}")
-    print("----------------------")
-
-def delete_patient(patients: List[Dict]) -> None:
     if not patients:
-        print("لیست خالی است؛ چیزی برای حذف نیست.")
+        print("📭 هیچ بیماری ثبت نشده است.")
         return
+
+    # چاپ لیست بیماران با شماره
+    for i, patient in enumerate(patients, start=1):
+        print(f"{i}. نام: {patient['name']} | سن: {patient['age']} | بیماری: {patient['disease']}")
+
+    print("-------------------------")
+
+
+def delete_patient(patients):
+    print("\n--- حذف بیمار ---")
+
+    if not patients:
+        print("📭 هنوز هیچ بیماری ثبت نشده است.")
+        return
+
     name = input("نام بیمار برای حذف: ").strip()
- 
-    for p in patients:
-        if p['name'] == name:
-            patients.remove(p)
+
+    # پیدا کردن بیمار با نام وارد شده
+    for patient in patients:
+        if patient["name"] == name:
+            patients.remove(patient)
             save_data(patients)
-            print(f"🗑️ بیمار '{name}' حذف شد.")
+            print(f"🗑 بیمار {name} با موفقیت حذف شد.")
             return
+
     print("❌ بیماری با این نام پیدا نشد.")
+
 
 # ----- رابط کاربری -----
 def show_menu() -> None:
